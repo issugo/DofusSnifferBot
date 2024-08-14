@@ -1,6 +1,10 @@
 ### Example user template template
 ### Example user template
 
+# Project files to ignore
+IdToMessage.json
+correspondance.txt
+
 # IntelliJ project files
 .idea
 *.iml

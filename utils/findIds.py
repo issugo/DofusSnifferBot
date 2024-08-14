@@ -4,7 +4,7 @@ import re
 
 MESSAGE_FOLDER = pathlib.Path('C:/Program Files (x86)/FFDec/scripts/com/ankamagames/dofus/network/messages')
 
-with open("correspondance.txt", "w") as correspondanceFile:
+with open("../correspondance.txt", "w") as correspondanceFile:
     for root, dirs, files in os.walk(MESSAGE_FOLDER):
         for file in files:
             filePath = pathlib.Path(root, file)

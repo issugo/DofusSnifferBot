@@ -12,8 +12,8 @@ def load_correspondence(file_path):
     return correspondence
 
 
-load_correspondence("./correspondance.txt")
-with open("IdToMessage.json", "w") as idToMessageFile:
+load_correspondence("../correspondance.txt")
+with open("../IdToMessage.json", "w") as idToMessageFile:
     idToMessageFile.write(
         json.dumps(correspondence, indent=4, sort_keys=True)
     )

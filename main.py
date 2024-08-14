@@ -8,11 +8,11 @@ ethernetNicUUID = '\\Device\\NPF_{AC96C4C9-D4B2-4ABD-A5FC-8F5BC32BF1F0}'
 correspondence = {}
 
 if not os.path.isfile("correspondance.txt"):
-    with open("findIds.py") as file:
+    with open("utils/findIds.py") as file:
         exec(file.read())
 
 if os.stat("correspondance.txt").st_size == 0:
-    with open("findIds.py") as file:
+    with open("utils/findIds.py") as file:
         exec(file.read())
 
 
