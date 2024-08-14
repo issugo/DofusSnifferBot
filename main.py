@@ -16,50 +16,12 @@ if os.stat("correspondance.txt").st_size == 0:
         exec(file.read())
 
 
-def parse_dofus_packet(raw_packet):
-    if len(raw_packet) < 2:
-        return None
-
-    hi_header = raw_packet[:2]
-    packet_id, length_type = decode_hi_header(hi_header)
-
-    length_bytes = raw_packet[2:2 + length_type]
-    length = decode_length(length_bytes, length_type)
-
-    content = raw_packet[2 + length_type:2 + length_type + length]
-
-    return {
-        'packet_id': packet_id,
-        'message_type': correspondence.get(packet_id, 'Unknown'),
-        'length': length,
-        'content': content.hex()
-    }
-
-
 def load_correspondence(file_path):
     with open(file_path, 'r') as file_correspondence:
         for line in file_correspondence:
             class_name, message_id = line.strip().split(':')
             correspondence[int(message_id)] = class_name
     return correspondence
-
-
-def decode_hi_header(hi_header):
-    hi_header = struct.unpack('>H', hi_header)[0]
-    packet_id = hi_header >> 2
-    length_type = hi_header & 3
-    return packet_id, length_type
-
-
-def decode_length(data, length_type):
-    if length_type == 0:
-        return 0
-    elif length_type == 1:
-        return struct.unpack('>B', data[:1])[0]
-    elif length_type == 2:
-        return struct.unpack('>H', data[:2])[0]
-    elif length_type == 3:
-        return struct.unpack('>I', b'\x00' + data[:3])[0]
 
 
 def deserialize_as_map_complementary_informations_with_coords_message(hexInput):
@@ -132,6 +94,10 @@ def deserialize_as_map_complementary_informations_data_message(hexInput, directi
     has_aggressive_monsters = reader.read_boolean()
     #self.fight_start_positions = FightStartingPositions()
     #self.fight_start_positions.deserialize(input)
+
+
+
+
 
 
 try:
