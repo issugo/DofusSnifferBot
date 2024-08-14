@@ -17,6 +17,11 @@ class DofusPacket:
     length_type = 0
     # correspondence between mesage ids and message type
     correspondence = {}
+    # direction should to_client, from_client or None
+    direction = None
+
+    def __str__(self):
+        return f"packet_id: {self.packet_id}, message_type: {self.message_type}, lenght: {self.length}"
 
     def __init__(self, packet):
         with open("IdToMessage.json", "r") as correspondenceJsonFile:
@@ -24,6 +29,7 @@ class DofusPacket:
         # find and decode hi_header
         hi_header = packet[:2]
         self.packet_id, self.length_type = DofusPacket.decode_hi_header(hi_header)
+        self.message_type = self.correspondence[str(self.packet_id)]
 
         # find and decode length
         length_bytes = packet[2:2 + self.length_type]
