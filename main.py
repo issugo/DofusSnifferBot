@@ -43,8 +43,12 @@ try:
                 payload = getattr(raw_packet.tcp, 'payload', None)
                 if payload:
                     dofus_packet = DofusPacket(bytes.fromhex(payload.replace(':', '')))
+                    print("------------------------------")
                     print(dofus_packet)
-                else:
-                    print("TCP layer has no payload.")
+                    print("------------------------------")
+                # else:
+                #     print("------------------------------")
+                #     print("TCP layer has no payload.")
+                #     print("------------------------------")
 except KeyboardInterrupt:
     print(capture)
