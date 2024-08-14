@@ -1,6 +1,8 @@
 import os
+import pathlib
+
 import pyshark
-import struct
+import importlib
 
 from HexReader import HexReader
 
@@ -96,6 +98,12 @@ def deserialize_as_map_complementary_informations_data_message(hexInput, directi
     #self.fight_start_positions.deserialize(input)
 
 
+messageClasses = {}
+current_path = pathlib.Path().resolve()
+for root, dirs, files in os.walk("ankama/messages"):
+    for file in files:
+        if file != "__init__.py":
+            messageClasses[file[:-3]] = importlib.import_module(file[:-3], root.removeprefix(str(current_path)))
 
 
 
