@@ -3,7 +3,6 @@ import os
 import pathlib
 import re
 
-import pyshark
 from scapy.all import *
 
 from ankama.DofusPacket import DofusPacket
@@ -42,54 +41,35 @@ print("\n")
 print("STARTING SNIFFING")
 
 
-def packetcallback(raw_packet):
-    # print("received a packet")
-    # print(raw_packet.summary())
+def newCallback(raw_packet):
     if "TCP" in raw_packet:
-        # print("le packet a TCP")
-        # print(raw_packet["TCP"].sport)
         direction = None
         if raw_packet["TCP"].sport == 5555:
-            direction = "from_client"
-        if raw_packet["TCP"].dport == 5555:
             direction = "to_client"
+        if raw_packet["TCP"].dport == 5555:
+            direction = "from_client"
         if direction is not None:
             # payload = getattr(raw_packet.tcp, 'payload', None)
             # payload = getattr(raw_packet.tcp, 'data', None)
             payload = None
             try:
-                #print("raw_packet: ", bytes(raw_packet["TCP"].payload))
                 payload = bytes(raw_packet["TCP"].payload)
-
-                # print(raw_packet.data.data)
-                # payload = raw_packet.data.data
             except:
                 print("no data")
             if payload:
-                try:
-                    # dofus_packet = DofusPacket(bytes.fromhex(payload.replace(':', '')))
-                    dofus_packet = DofusPacket(payload)
-                    dofus_packet.direction = direction
-                    print("------------------------------")
-                    print(dofus_packet)
-                    print("------------------------------")
-                    if dofus_packet.message_type == "MapInformationsRequestMessage":
-                        mapInfo = MapInformationsRequestMessage(dofus_packet.hexContent)
-                        print(f"mapInfo: {mapInfo.mapId}")
-                except Exception as e:
-                    print("opusie un bug")
-                    print(e)
-                    print("------------------------------")
-            # else:
-            #     print("------------------------------")
-            #     print("TCP layer has no payload.")
-            #     print("------------------------------")
-
-
-
-
+                first_two_bytes = payload[:2]
+                hiheader = int.from_bytes(first_two_bytes, byteorder='big', signed=False)
+                packetId = hiheader >> 2
+                lengthType = hiheader & 3
+                #print(f"foud dofus packet, hiheader: {hiheader}, packetId: {packetId}, lengthType: {lengthType}")
+                dofus_packet = DofusPacket(payload)
+                dofus_packet.direction = direction
+                #print("------------------------------")
+                #print(dofus_packet)
+                #print("------------------------------")
 
 try:
-    sniff(filter="tcp port 5555", prn=packetcallback)
+    #sniff(filter="tcp port 5555", prn=packetcallback)
+    sniff(filter="tcp port 5555", prn=newCallback)
 except:
     print("Sorry, can\'t read network traffic. Are you root?")
