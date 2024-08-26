@@ -28,6 +28,7 @@ class DofusPacket:
             self.correspondence = json.load(correspondenceJsonFile)
         # find and decode hi_header
         hi_header = packet[:2]
+        print("hi_deader: ", bytes.hex(hi_header))
         self.packet_id, self.length_type = DofusPacket.decode_hi_header(hi_header)
         self.message_type = self.correspondence[str(self.packet_id)]
 
@@ -37,6 +38,7 @@ class DofusPacket:
 
         # set content
         self.content = packet[2 + self.length_type:2 + self.length_type + self.length]
+        print("content: ", bytes.hex(self.content))
         self.hexContent = self.content.hex()
 
     @staticmethod

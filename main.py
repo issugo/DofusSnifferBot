@@ -30,6 +30,7 @@ for root, dirs, files in os.walk("ankama/messages"):
                 messageClasses[file[:-3]] = importlib.import_module(f".{file[:-3]}", newRoot)
 print("\n")
 
+print("STARTING SNIFFING")
 try:
     capture = pyshark.LiveCapture(interface=ethernetNicUUID)
     for raw_packet in capture.sniff_continuously():
@@ -40,12 +41,28 @@ try:
             if raw_packet.tcp.dstport == '5555':
                 direction = "to_client"
             if direction is not None:
-                payload = getattr(raw_packet.tcp, 'payload', None)
+                # payload = getattr(raw_packet.tcp, 'payload', None)
+                # payload = getattr(raw_packet.tcp, 'data', None)
+                payload = None
+                try:
+                    print(raw_packet.data.data)
+                    payload = raw_packet.data.data
+                except:
+                    print("no data")
                 if payload:
-                    dofus_packet = DofusPacket(bytes.fromhex(payload.replace(':', '')))
-                    print("------------------------------")
-                    print(dofus_packet)
-                    print("------------------------------")
+                    try:
+                        dofus_packet = DofusPacket(bytes.fromhex(payload.replace(':', '')))
+                        dofus_packet.direction = direction
+                        print("------------------------------")
+                        print(dofus_packet)
+                        print("------------------------------")
+                        if dofus_packet.message_type == "MapInformationsRequestMessage":
+                            mapInfo = MapInformationsRequestMessage(dofus_packet.hexContent)
+                            print(f"mapInfo: {mapInfo.mapId}")
+                    except Exception as e:
+                        print("opusie un bug")
+                        print(e)
+                        print("------------------------------")
                 # else:
                 #     print("------------------------------")
                 #     print("TCP layer has no payload.")
