@@ -61,15 +61,15 @@ def newCallback(raw_packet):
                 hiheader = int.from_bytes(first_two_bytes, byteorder='big', signed=False)
                 packetId = hiheader >> 2
                 lengthType = hiheader & 3
-                #print(f"foud dofus packet, hiheader: {hiheader}, packetId: {packetId}, lengthType: {lengthType}")
+                # print(f"foud dofus packet, hiheader: {hiheader}, packetId: {packetId}, lengthType: {lengthType}")
                 dofus_packet = DofusPacket(payload)
                 dofus_packet.direction = direction
-                #print("------------------------------")
-                #print(dofus_packet)
-                #print("------------------------------")
+                # print("------------------------------")
+                # print(dofus_packet)
+                # print("------------------------------")
+
 
 try:
-    #sniff(filter="tcp port 5555", prn=packetcallback)
     sniff(filter="tcp port 5555", prn=newCallback)
 except:
     print("Sorry, can\'t read network traffic. Are you root?")
